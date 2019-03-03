@@ -6,10 +6,13 @@ import 'babel-polyfill'
 
 // Pages:
 import Home from './pages/Home'
+import { Testing } from 'pages/Testing'
+
+// Context:
+import { AppProvider } from 'context/appContext'
 
 // Service Worker
 import registerServiceWorker from './registerServiceWorker'
-
 
 // Styles:
 import '../node_modules/tt-react-ui-2/build/index.css'
@@ -18,11 +21,14 @@ import './styles.css'
 // ================================================================================================
 
 ReactDOM.render(
-  <Router>
-    <Switch>
-      <Route exact path="/" component={Home} />
-    </Switch>
-  </Router>,
+  <AppProvider>
+    <Router>
+      <Switch>
+        <Route exact path="/" component={Home} />
+        <Route path="/test" component={Testing} />
+      </Switch>
+    </Router>
+  </AppProvider>,
   document.getElementById('root')
 )
 

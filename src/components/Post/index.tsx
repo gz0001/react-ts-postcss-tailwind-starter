@@ -1,12 +1,8 @@
 import * as React from 'react'
 import { Box, createState, Headline, Text } from 'tt-react-ui-2'
-import Ajax from 'utils/Ajax';
-
-
+import Ajax from 'utils/Ajax'
 
 // ================================================================================================
-
-
 
 type State = {
   data: Record<string, any>
@@ -14,7 +10,7 @@ type State = {
   loading: boolean
 }
 
-export const Post: React.FunctionComponent = () => {
+export const Post: React.FunctionComponent = React.memo(() => {
   // Random post id
   const random = Math.floor(Math.random() * 100) + 1
 
@@ -25,18 +21,18 @@ export const Post: React.FunctionComponent = () => {
   const mount = React.useRef(false)
 
   // State
-  const [state, setState] = createState<State>({data: null, error: false, loading: true})
+  const [state, setState] = createState<State>({ data: null, error: false, loading: true })
 
-  const {data, loading, error} = state
+  const { data, loading, error } = state
 
   // Fetch funtion
   const fetch = async () => {
-    try {
-      setState({loading: true})
-      const data = await ajax.get(`https://jsonplaceholder.typicode.com/posts/${random}`)
-      data ? mount.current && setState({data, loading: false, error: false}) : mount.current && setState({loading: false, error: true})
-    } catch (error) {
-      setState({error: true, loading: false})
+    setState({ loading: true })
+    const data = await ajax.get(`https://jsonplaceholder.typicode.com/posts/${random}`)
+    if (mount.current) {
+      data
+        ? setState({ data, loading: false, error: false })
+        : setState({ loading: false, error: true })
     }
   }
 
@@ -50,18 +46,21 @@ export const Post: React.FunctionComponent = () => {
     }
   }, [])
 
+  console.log('Post rendered')
 
   // Render
-  if(loading) return <p  className="text-center">Loading...</p>
+  if (loading) return <p className="text-center">Loading...</p>
 
-  if(error) return <p  className="text-center">Error :(</p>
-
+  if (error) return <p className="text-center">Error :(</p>
 
   return (
-    <Box className="Post" border="2, first" display="block" p="4" mx="auto" w="auto"> 
+    <Box className="Post" border="2, first" display="block" p="4" mx="auto" w="auto">
       <Headline mt="4">Post: {random}</Headline>
-      <Text bold display="block" center mt="2" size="xl">{data.title}</Text><br/>
+      <Text bold display="block" center mt="2" size="xl">
+        {data.title}
+      </Text>
+      <br />
       <Text>{data.body}</Text>
     </Box>
   )
-}
+})
