@@ -1,3 +1,4 @@
+// @ts-nocheck
 // Components:
 import React, { Component } from 'react'
 
@@ -13,7 +14,7 @@ import Ajax from 'utils/Ajax'
 import { Box, Selectbox, Option, Selection, Container, Row, Col, Headline } from 'tt-react-ui-2'
 
 // Atoms:
-import { Button } from 'atoms/Button';
+import { Button } from 'atoms/Button'
 // ================================================================================================
 
 const options: Option[] = [
@@ -37,6 +38,8 @@ class Home extends Component<any, State> {
     open: false
   }
 
+  btnRef = React.createRef<HTMLDivElement>()
+
   ajax: Ajax = new Ajax()
 
   handleSelect = (select: Selection) => {
@@ -51,7 +54,7 @@ class Home extends Component<any, State> {
     const res = await this.ajax.post('https://jsonplaceholder.typicode.com/posts', {
       data: { title: 'foo', body: 'barsacascsacsac', userId: 1 }
     })
-    console.log('res: ', res)
+    console.log('res: ', res, this.btnRef.current)
   }
 
   // ============================================
@@ -59,7 +62,16 @@ class Home extends Component<any, State> {
   render() {
     const { select, open } = this.state
     return (
-      <Box className="Home" h="screen" items="center" pt="10" flex="col" bg="white">
+      <Box
+        className="Home"
+        h="screen"
+        items="center"
+        pt="10"
+        flex="col"
+        bg="white"
+        // @ts-ignore
+        ref={this.btnRef}
+      >
         <Box
           justify="center"
           items="center"
@@ -82,7 +94,8 @@ class Home extends Component<any, State> {
           selection={select}
           style={{ width: '50%' }}
         />
-        <Button my="4" py="4" px="8" onClick={() => console.log('clicked')}>
+
+        <Button my="4" py="4" px="8" onClick={() => console.log('clicked', this.btnRef)}>
           Click here
         </Button>
 
@@ -111,12 +124,14 @@ class Home extends Component<any, State> {
               </Box>
             </Col>
           </Row>
-          <hr/>
+          <hr />
           <Row justify="center">
             <Col width="12, md:6, lg:5" mt="12">
               <Headline center>Ajax example:</Headline>
-              <Button onClick={this.toogleOpen} display="block" p="4" my="4" mx="auto">{open ? 'Hide Pose' : 'Show Post'}</Button>
-             {open && <Post />}
+              <Button onClick={this.toogleOpen} display="block" p="4" my="4" mx="auto">
+                {open ? 'Hide Pose' : 'Show Post'}
+              </Button>
+              {open && <Post />}
             </Col>
           </Row>
         </Container>
